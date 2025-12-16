@@ -1,10 +1,26 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware # <--- IMPORTANTE
 from pydantic import BaseModel
 from typing import List, Optional
 from app.services.llm_service import SupportAgent
 
 app = FastAPI(title="AI Support Agent API", version="1.0.0")
 
+# --- CONFIGURAÇÃO DE CORS (O Segredo) ---
+# Isso permite que seu Front-end converse com seu Back-end
+origins = [
+    "http://localhost:3000",          # Para seus testes locais
+    "https://seu-portfolio.vercel.app", # URL do seu portfólio (troque pela real)
+    "*"                               # Em último caso, use "*" para liberar para todos (bom para testes)
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 # Inicializa o Agente
 agent = SupportAgent()
 
